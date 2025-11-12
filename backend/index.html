@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Student Mental Stress Detection System</title>
+
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <!-- ✅ SEO and sharing metadata -->
+    <meta name="description" content="An AI-based system for detecting student stress using facial emotion recognition." />
+    <meta property="og:title" content="Student Mental Stress Detection System" />
+    <meta property="og:description" content="Detect and monitor stress levels using emotion recognition technology." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/cover.png" />
+
+    <!-- ✅ App theme color -->
+    <meta name="theme-color" content="#1e40af" />
+  </head>
+
+  <body style="margin: 0; background: #f8fafc; font-family: 'Inter', sans-serif;">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <!-- React root -->
+    <div id="root"></div>
+
+    <!-- ✅ Optional live emotion detection preview (Flask stream)
+         Uncomment below <section> if you want a direct webcam feed inside the page
+         (Flask backend must run and serve /video_feed)
+    -->
+    <!--
+    <section style="text-align:center; margin-top: 2rem;">
+      <h2>Live Emotion Detection Preview</h2>
+      <img
+        src="http://127.0.0.1:5000/video_feed"
+        alt="Video Stream"
+        style="width: 480px; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"
+      />
+    </section>
+    -->
+
+    <!-- ✅ React main entry -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

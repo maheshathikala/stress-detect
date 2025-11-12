@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Stress Detection - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🧠 Student Stress Detection</h1>
+                <p>Monitor your mental well-being through AI-powered facial analysis</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-tabs">
+                    <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                    <button class="tab-btn" onclick="switchTab('register')">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <div class="input-group">
+                        <input type="text" id="loginUsername" placeholder="Username" required>
+                        <span class="input-icon">👤</span>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <span class="input-icon">🔒</span>
+                    </div>
+                    <button type="submit" class="auth-btn">Login</button>
+                    <div id="loginMessage" class="message"></div>
+                </form>
+                
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form">
+                    <h2>Create Account</h2>
+                    <div class="input-group">
+                        <input type="text" id="registerUsername" placeholder="Username" required>
+                        <span class="input-icon">👤</span>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                        <span class="input-icon">📧</span>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="registerPassword" placeholder="Password" required>
+                        <span class="input-icon">🔒</span>
+                    </div>
+                    <!-- ✅ Admin Secret Code removed -->
+                    <button type="submit" class="auth-btn">Register</button>
+                    <div id="registerMessage" class="message"></div>
+                </form>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">📸</span>
+                    <h3>Real-time Analysis</h3>
+                    <p>Use your camera for instant stress detection</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📊</span>
+                    <h3>Detailed Reports</h3>
+                    <p>Track your stress levels over time</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Personalized Tips</h3>
+                    <p>Get recommendations based on your results</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>

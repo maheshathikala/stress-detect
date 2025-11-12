@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress Detection - Student Stress Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h2>🧠 Stress Detection</h2>
+            </div>
+            <div class="nav-menu">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/stress-detection" class="nav-link active">Stress Detection</a>
+                <a href="/logout" class="nav-link">Logout</a>
+            </div>
+        </nav>
+        
+        <div class="detection-container">
+            <div class="detection-header">
+                <h1>Student Mental Stress Detection 🤖</h1>
+                <p>Position yourself in front of the camera for accurate analysis</p>
+            </div>
+            
+            <div class="detection-content">
+                <div class="camera-section">
+                    <div class="camera-container">
+                        <video id="video" autoplay playsinline></video>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                        <div class="camera-overlay">
+                            <div class="face-guide">
+                                <div class="guide-text">Align your face within this area</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="camera-controls">
+                        <button id="startBtn" class="btn btn-primary">Start Camera</button>
+                        <button id="captureBtn" class="btn btn-success" style="display: none;">Analyze Stress</button>
+                        <button id="stopBtn" class="btn btn-danger" style="display: none;">Stop Camera</button>
+                    </div>
+                </div>
+                
+                <div class="results-section">
+                    <div class="result-card">
+                        <h3>Analysis Results</h3>
+                        <div id="results" class="results-content">
+                            <div class="no-results">
+                                📱 Start the camera and click "Analyze Stress" to begin detection
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tips-card">
+                        <h3>Detection Tips</h3>
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <span class="tip-icon">💡</span>
+                                <span>Ensure good lighting on your face</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">📸</span>
+                                <span>Look directly at the camera</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">😐</span>
+                                <span>Maintain a natural expression</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🔇</span>
+                                <span>Stay still during analysis</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stress-info">
+                <h3>Understanding Your Results</h3>
+                <div class="stress-levels">
+                    <div class="stress-level low">
+                        <div class="level-indicator"></div>
+                        <div class="level-info">
+                            <strong>0-30%: Low Stress</strong>
+                            <p>You're feeling relaxed and calm. Great job managing your stress!</p>
+                        </div>
+                    </div>
+                    <div class="stress-level mild">
+                        <div class="level-indicator"></div>
+                        <div class="level-info">
+                            <strong>31-50%: Mild Stress</strong>
+                            <p>Some tension detected. Consider taking short breaks throughout your day.</p>
+                        </div>
+                    </div>
+                    <div class="stress-level moderate">
+                        <div class="level-indicator"></div>
+                        <div class="level-info">
+                            <strong>51-70%: Moderate Stress</strong>
+                            <p>Noticeable stress levels. Time to practice relaxation techniques.</p>
+                        </div>
+                    </div>
+                    <div class="stress-level high">
+                        <div class="level-indicator"></div>
+                        <div class="level-info">
+                            <strong>71-100%: High Stress</strong>
+                            <p>Significant stress detected. Please prioritize self-care and consider seeking support.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/stress-detection.js') }}"></script>
+</body>
+</html>

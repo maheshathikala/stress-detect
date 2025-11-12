@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Details</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>User: {{ user.username }}</h1>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Role:</strong> {{ user.role }}</p>
+    <p><a href="/dashboard">⬅ Back to Admin Dashboard</a></p>
+
+    <h2>Stress Logs</h2>
+    {% if logs %}
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Stress Level</th><th>Message</th></tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+            <tr>
+              <td>{{ log.timestamp }}</td>
+              <td>{{ log.stress_level }}%</td>
+              <td>{{ log.message }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No stress logs found for this user.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

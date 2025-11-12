@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Student Stress Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="dashboard">
+    <nav class="navbar">
+      <div class="nav-brand"><h2>👑 Admin Panel</h2></div>
+      <div class="nav-menu">
+        <a href="/dashboard" class="nav-link active">Admin Dashboard</a>
+        <a href="/stress-detection" class="nav-link">Test Detection</a>
+        <a href="/logout" class="nav-link">Logout</a>
+      </div>
+    </nav>
+
+    <div class="dashboard-content">
+      <div class="welcome-section">
+        <h1>Admin Dashboard 🛠️</h1>
+        <p>Manage users and monitor system activity</p>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- System stats -->
+        <div class="card">
+          <div class="card-header">
+            <h3>System Statistics</h3>
+            <span class="card-icon">📊</span>
+          </div>
+          <div class="card-content">
+            <div class="stats-grid">
+              <div class="stat clickable" onclick="showSection('usersSection')">
+                <div class="stat-number" id="totalUsers">-</div>
+                <div class="stat-label">Total Users</div>
+              </div>
+              <div class="stat clickable" onclick="showSection('sessionsSection')">
+                <div class="stat-number" id="totalSessions">-</div>
+                <div class="stat-label">Total Sessions</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Section -->
+      <div id="usersSection" class="card full-width dashboard-section active">
+        <div class="card-header">
+          <h3>User Management</h3>
+          <span class="card-icon">👥</span>
+        </div>
+        <div class="card-content">
+          <div class="toolbar" style="display:flex;justify-content:flex-end;margin-bottom:12px;gap:8px;">
+            <button class="btn" onclick="openAddModal()">➕ Add User</button>
+          </div>
+          <div class="table-container">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr><td colspan="5" class="loading">Loading users...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sessions Section -->
+      <div id="sessionsSection" class="card full-width dashboard-section">
+        <div class="card-header">
+          <h3>Recent Stress Detection Logs</h3>
+          <span class="card-icon">🔍</span>
+        </div>
+        <div class="card-content">
+          <div id="allLogs"><div class="loading">Loading system logs...</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h3>Confirm Deletion</h3>
+      <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <h3 id="userModalTitle">Add User</h3>
+      <form id="userForm" onsubmit="submitUserForm(event)">
+        <input type="hidden" id="editingUserId" />
+        <div class="form-row">
+          <label>Username</label>
+          <input id="usernameInput" type="text" required />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input id="emailInput" type="email" placeholder="optional" />
+        </div>
+        <div class="form-row">
+          <label>Password <span id="pwdHint" class="text-muted">(required for new user)</span></label>
+          <input id="passwordInput" type="password" />
+        </div>
+        <div class="form-row">
+          <label>Role</label>
+          <select id="roleInput">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancel</button>
+          <button type="submit" class="btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

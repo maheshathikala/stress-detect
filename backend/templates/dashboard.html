@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student Stress Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h2>🧠 Stress Detection</h2>
+            </div>
+            <div class="nav-menu">
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+                <a href="/stress-detection" class="nav-link">Start Detection</a>
+                <a href="/logout" class="nav-link">Logout</a>
+            </div>
+        </nav>
+        
+        <div class="dashboard-content">
+            <div class="welcome-section">
+                <h1>Welcome back! 👋</h1>
+                <p>Ready to monitor your stress levels?</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Quick Start</h3>
+                        <span class="card-icon">🚀</span>
+                    </div>
+                    <div class="card-content">
+                        <p>Start a new stress detection session using your camera.</p>
+                        <a href="/stress-detection" class="btn btn-primary">Start Detection</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <span class="card-icon">📈</span>
+                    </div>
+                    <div class="card-content">
+                        <div id="recentLogs">
+                            <div class="loading">Loading your recent sessions...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Stress Tips</h3>
+                        <span class="card-icon">💡</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="tips">
+                            <div class="tip">
+                                <strong>Deep Breathing:</strong> Take 5 deep breaths when feeling overwhelmed.
+                            </div>
+                            <div class="tip">
+                                <strong>Regular Breaks:</strong> Take a 5-minute break every hour.
+                            </div>
+                            <div class="tip">
+                                <strong>Stay Hydrated:</strong> Drink water regularly throughout the day.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card full-width">
+                    <div class="card-header">
+                        <h3>Your Stress History</h3>
+                        <span class="card-icon">📊</span>
+                    </div>
+                    <div class="card-content">
+                        <div id="stressHistory">
+                            <div class="loading">Loading your stress history...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
