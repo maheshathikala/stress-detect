@@ -1,6 +1,3 @@
-// 🔐 Hidden Admin credentials
-const ADMIN_USERNAME = "sanjay";
-const ADMIN_SECRET = "jalsa2008";
 
 // DOM references
 const loginForm = document.getElementById("loginForm");
