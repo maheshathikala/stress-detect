@@ -419,4 +419,6 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(debug=FLASK_DEBUG, port=FLASK_PORT)
+    # Render sets PORT env var; fallback to FLASK_PORT for local dev
+    port = int(os.environ.get('PORT', FLASK_PORT))
+    app.run(debug=FLASK_DEBUG, host='0.0.0.0', port=port)
