@@ -39,9 +39,9 @@ wheels/
 
 # Models (too large for git)
 # Models (Tracked)
-# *.h5
-# emotion_model.h5
-# emotion_model_best.h5
+# *.h5 allowed
+# emotion_model.h5 allowed
+# emotion_model_best.h5 allowed
 
 # Data
 fer_data/
