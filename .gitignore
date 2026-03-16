@@ -38,9 +38,10 @@ wheels/
 .DS_Store
 
 # Models (too large for git)
-*.h5
-emotion_model.h5
-emotion_model_best.h5
+# Models (Tracked)
+# *.h5
+# emotion_model.h5
+# emotion_model_best.h5
 
 # Data
 fer_data/
