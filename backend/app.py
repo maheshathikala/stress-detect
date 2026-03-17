@@ -14,6 +14,15 @@ import cv2
 import numpy as np
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import InputLayer
+
+# Compatibility shim: newer Keras saves InputLayer with 'batch_shape',
+# but TF 2.13 bundled Keras expects 'batch_input_shape'.
+class CompatInputLayer(InputLayer):
+    def __init__(self, **kwargs):
+        if 'batch_shape' in kwargs:
+            kwargs['batch_input_shape'] = kwargs.pop('batch_shape')
+        super().__init__(**kwargs)
 from PIL import Image
 from bson import ObjectId
 
@@ -65,7 +74,11 @@ try:
     model_path_abs = MODEL_PATH if os.path.isabs(MODEL_PATH) else os.path.join(base_dir, MODEL_PATH)
 
     if os.path.exists(model_path_abs):
-        emotion_model = load_model(model_path_abs)
+        emotion_model = load_model(
+            model_path_abs,
+            custom_objects={'InputLayer': CompatInputLayer},
+            compile=False
+        )
         print(f"✅ Emotion model loaded successfully from: {model_path_abs}")
     else:
         raise FileNotFoundError(f"Model not found at: {model_path_abs}")
