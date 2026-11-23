@@ -70,6 +70,11 @@ function stopCamera() {
 async function captureAndAnalyze() {
     if (isDetecting) return;
     
+    if (!stream || !video.videoWidth) {
+        updateResults('❌ Camera is not ready. Please start the camera first.', 'error');
+        return;
+    }
+
     isDetecting = true;
     const captureBtn = document.getElementById('captureBtn');
     const originalText = captureBtn.textContent;
@@ -99,6 +104,18 @@ async function captureAndAnalyze() {
             body: JSON.stringify({ image: imageData })
         });
         
+        // FIX: check status before parsing JSON (a 502 returns an empty body)
+        if (response.status === 401) {
+            updateResults('❌ Session expired. Redirecting to login...', 'error');
+            setTimeout(() => { window.location.href = '/'; }, 1500);
+            return;
+        }
+        if (!response.ok && !(response.headers.get('content-type') || '').includes('application/json')) {
+            console.error('Server error:', response.status);
+            updateResults(`❌ Server error (${response.status}). The server may be waking up or overloaded. Please try again in a minute.`, 'error');
+            return;
+        }
+
         const data = await response.json();
         
         if (data.success) {
@@ -131,7 +148,7 @@ function displayStressResult(stressLevel, message) {
                 <p>${message}</p>
             </div>
             <div class="result-actions">
-                <button class="btn btn-primary" onclick="captureAndAnalyze()" ${isDetecting ? 'disabled' : ''}>
+                <button class="btn btn-primary" onclick="captureAndAnalyze()">
                     Analyze Again
                 </button>
                 <button class="btn btn-secondary" onclick="viewHistory()">
