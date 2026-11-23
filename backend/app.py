@@ -1,5 +1,6 @@
-# app.py (fixed: no truthy tests on PyMongo collections)
+# app.py (fixed: 502 / timeout issues)
 import os
+os.environ.setdefault('TF_CPP_MIN_LOG_LEVEL', '2')  # FIX: less TensorFlow log noise
 from datetime import datetime
 import random
 import io
@@ -37,7 +38,11 @@ FLASK_DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() in ('1', 'true', 'y
 FLASK_PORT = int(os.environ.get('FLASK_PORT', 5000))
 
 # SECRET_KEY - use env if present, otherwise fallback to a generated key (not for production)
-SECRET_KEY = os.environ.get('SECRET_KEY') or _secrets.token_hex(16)
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    # FIX: a random key changes on every restart/worker, which logs users out. Set SECRET_KEY on Render.
+    print('WARNING: SECRET_KEY not set. Using a temporary key; set SECRET_KEY in environment variables.')
+    SECRET_KEY = _secrets.token_hex(16)
 
 # --------- Flask ----------
 app = Flask(__name__)
@@ -46,7 +51,13 @@ CORS(app, supports_credentials=True)
 
 # --------- MongoDB ----------
 try:
-    client = MongoClient(MONGO_URI)
+    # FIX: fail fast (5s) instead of the 30s default, which exceeded gunicorn's timeout and caused 502
+    client = MongoClient(
+        MONGO_URI,
+        serverSelectionTimeoutMS=5000,
+        connectTimeoutMS=5000,
+        socketTimeoutMS=10000,
+    )
     db = client[DB_NAME]
     users_collection = db['users']
     stress_logs_collection = db['stress_logs']
@@ -288,7 +299,11 @@ def delete_user(user_id):
 @app.route('/api/detect-stress', methods=['POST'])
 def detect_stress():
     if 'user_id' not in session:
-        return jsonify({'success': False, 'message': 'Unauthorized'})
+        # FIX: proper 401 status
+        return jsonify({'success': False, 'message': 'Session expired. Please log in again.'}), 401
+    # FIX: do not return fake results when the model failed to load
+    if emotion_model is None:
+        return jsonify({'success': False, 'message': 'Emotion model is not loaded on the server.'}), 503
     try:
         data = request.get_json(force=True)
         if not data or 'image' not in data:
@@ -308,14 +323,18 @@ def detect_stress():
         stress_level, top_emotion = analyze_stress_with_model(gray, faces)
 
         # Explicit None check for collection
+        # FIX: a DB failure must not break the detection result (and must not hang the request)
         if stress_logs_collection is not None:
-            stress_logs_collection.insert_one({
-                'user_id': session['user_id'],
-                'username': session['username'],
-                'stress_level': stress_level,
-                'detected_emotion': top_emotion,
-                'timestamp': datetime.utcnow()
-            })
+            try:
+                stress_logs_collection.insert_one({
+                    'user_id': session['user_id'],
+                    'username': session['username'],
+                    'stress_level': stress_level,
+                    'detected_emotion': top_emotion,
+                    'timestamp': datetime.utcnow()
+                })
+            except Exception as db_err:
+                print("Could not save stress log:", db_err)
 
         return jsonify({
             'success': True,
@@ -330,7 +349,7 @@ def detect_stress():
 @app.route('/api/stress-logs')
 def get_stress_logs():
     if 'user_id' not in session:
-        return jsonify({'success': False, 'message': 'Unauthorized'})
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
     if stress_logs_collection is None:
         return jsonify({'success': False, 'message': 'Database unavailable'}), 500
     try:
@@ -356,8 +375,9 @@ def analyze_stress_with_model(gray_frame, faces):
         roi_gray = img_to_array(roi_gray)
         roi_gray = np.expand_dims(roi_gray, axis=0)
 
-        preds = emotion_model.predict(roi_gray)[0] if emotion_model is not None else np.zeros((7,))
-        emotion_index = int(np.argmax(preds)) if preds is not None else 0
+        # FIX: verbose=0 avoids progress-bar output and is faster on the server
+        preds = emotion_model.predict(roi_gray, verbose=0)[0]
+        emotion_index = int(np.argmax(preds))
         emotion = emotion_labels[emotion_index] if emotion_labels else "Unknown"
 
         stress_map = {
@@ -375,7 +395,7 @@ def analyze_stress_with_model(gray_frame, faces):
         return max(0, min(100, stress_level)), emotion
     except Exception as e:
         print(f"Model stress analysis error: {e}")
-        return random.randint(20, 80), "Unknown"
+        raise  # FIX: do not invent a random stress value; let detect_stress return an error
 
 def get_stress_message(stress_level):
     if stress_level < 30:
@@ -386,6 +406,11 @@ def get_stress_message(stress_level):
         return "Moderate stress detected. Try relaxation techniques. 😰"
     else:
         return "High stress detected. Please take care of yourself! 😟"
+
+# FIX: health check for Render (set Health Check Path to /health)
+@app.route('/health')
+def health():
+    return jsonify({'status': 'ok', 'model_loaded': emotion_model is not None}), 200
 
 # -------------------- OPTIONAL: REAL-TIME VIDEO FEED --------------------
 @app.route('/video_feed')

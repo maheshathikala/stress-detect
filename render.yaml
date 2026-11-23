@@ -2,9 +2,21 @@ services:
   - type: web
     name: stress-detect-backend
     env: python
-    pythonVersion: "3.10.12"
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: gunicorn backend.app:app --bind 0.0.0.0:$PORT
+    # FIX: 1 worker (TensorFlow uses lots of RAM), 120s timeout (model load + first prediction are slow)
+    startCommand: gunicorn backend.app:app --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 120
+    healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
         value: "3.10.12"
+      # Set these in the Render dashboard (Environment tab). They are NOT read from your local .env:
+      - key: MONGO_URI
+        sync: false
+      - key: DB_NAME
+        value: stress_detection_db
+      - key: SECRET_KEY
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
